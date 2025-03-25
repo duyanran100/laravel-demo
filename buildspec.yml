@@ -1,0 +1,44 @@
+version: 0.2
+
+env:
+  variables:
+    COMPOSER_CACHE_DIR: .cache/composer
+
+phases:
+  install:
+    runtime-versions:
+      php: 8.2
+      nodejs: 18.x
+    commands:
+      - apt update -y
+      - curl -s https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+      - mkdir -p .cache/composer
+
+  build:
+    commands:
+      - composer install --optimize-autoloader
+      - php artisan optimize:clear
+      - npm install
+      - npm run build
+
+artifacts:
+  files:
+    - app/**/*
+    - bootstrap/**/*
+    - config/**/*
+    - database/**/*
+    - public/**/*
+    - resources/**/*
+    - routes/**/*
+    - storage/**/*
+    - vendor/**/*
+    - appspec.yml
+    - artisan
+    - composer.json
+    - scripts/**/*
+    - .env.example
+
+cache:
+  paths:
+    - .cache/composer/**/* 
+    - node_modules/**/*
