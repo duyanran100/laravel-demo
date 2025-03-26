@@ -11,14 +11,19 @@ phases:
       nodejs: 18.x
     commands:
       - apt update -y
+      - echo Installing Composer...
       - curl -s https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
       - mkdir -p .cache/composer
 
   build:
     commands:
-      - composer install --optimize-autoloader
+      - echo Installing PHP dependencies...
+      - php /usr/local/bin/composer install --optimize-autoloader --no-dev
+      - echo Clearing and caching Laravel...
       - php artisan optimize:clear
+      - echo Installing NPM packages...
       - npm install
+      - echo Building frontend assets...
       - npm run build
 
 artifacts:
@@ -32,11 +37,10 @@ artifacts:
     - routes/**/*
     - storage/**/*
     - vendor/**/*
-    - appspec.yml
-    - artisan
     - composer.json
-    - scripts/**/*
-    - .env.example
+    - artisan
+    - appspec.yml
+    - aws/codedeploy/**/*
 
 cache:
   paths:

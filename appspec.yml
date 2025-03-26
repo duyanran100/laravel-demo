@@ -3,10 +3,15 @@ os: linux
 files:
   - source: /
     destination: /var/www/laravel-demo
+
 hooks:
   AfterInstall:
-    - location: scripts/install.sh
+    - location: aws/codedeploy/scripts/generate-env.sh
       timeout: 300
-  ApplicationStart:
-    - location: scripts/restart.sh
-      timeout: 60
+      runas: root
+    - location: aws/codedeploy/scripts/set-permissions.sh
+      timeout: 300
+      runas: root
+    - location: aws/codedeploy/scripts/setup-app.sh
+      timeout: 300
+      runas: root
